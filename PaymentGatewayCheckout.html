@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+</head>
+<body>
+	<form id="pGateway" method="post">
+		<input type="text" id="merchantID"><br>
+		<br>
+		<input type="text" name="amount" id="txtAmount" placeholder="Amount">
+		<select name="currency">
+			<option value="mur">MUR</option>
+			<option value="dollar">Dollar</option>
+			<option value="pound">Pound</option>
+			<option value="euro">Euro</option>
+		</select><br>
+		<br>
+		<input type="text" name="cardNumber" id="txtTransactionType" placeholder="Transaction Type" maxlength="10">
+		<input type="text" name="cardNumber" id="txtCardNumber" placeholder="Card Number" maxlength="10">
+		<input type="text" name="expiryDate" id="txtExpiryDate" placeholder="Expiry Date" maxlength="4">
+		<input type="text" name="cvv" id="txtCvv" placeholder="CVV" maxlength="3"><br>
+		<br>
+
+		<button type="button" onClick="postTransaction()">Submit</button> &nbsp;&nbsp;&nbsp;
+		<button type="button" onClick="loadDetails()">View Details</button>
+	</form>
+	<div id="displayResults"></div>
+</body>
+
+<script>
+function postTransaction() {
+  var xhttp = new XMLHttpRequest();
+
+  	var merchantID =  document.getElementById("merchantID").value;
+    var cardNumber =  document.getElementById("txtCardNumber").value;
+    var expiryDetails =  document.getElementById("txtExpiryDate").value;
+    var transactionType =  document.getElementById("txtTransactionType").value;
+    var transactionAmount =  parseInt(document.getElementById("txtAmount").value);
+    var cvv =  parseInt(document.getElementById("txtCvv").value);
+
+  var postLoad = '
+  {
+  	"merchantID": merchantID,
+    "cardNumber": cardNumber,
+    "expiryDetails": expiryDetails,
+    "transactionType": transactionType,
+    "transactionAmount": transactionAmount,
+    "cvv": cvv
+  }';
+
+  var jsonLoad = JSON.parse(postLoad);
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {}
+  };
+  xhttp.open("POST", "http://localhost:5000/post/payementgateway", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send(JSON.stringify(jsonLoad);
+}
+
+function loadDetails() {
+var xhttp = new XMLHttpRequest();
+var link = "http://localhost:5000/get/paymentgateway/";
+var merchantID = parseInt(document.getElementById("merchantID").value);
+var getEndPoint = link.concat(merchantID);
+xhttp.onreadystatechange = function() {
+	if (this.readyState == 4 && this.status == 200) {
+		document.getElementById("displayResults").innerHTML = this.responseText;
+   }
+};
+xhttp.open("GET", getEndPoint, true);
+xhttp.send();
+}
+</script>
+
+<footer></footer>
+</html>
